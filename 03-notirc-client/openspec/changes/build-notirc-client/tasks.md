@@ -15,11 +15,11 @@
 
 ## 3. Session state machine (Core)
 
-- [ ] 3.1 Implement connect, join and the status stream (connecting, joined, reconnecting, stopped with reason); verify tests for the "Connect and join on launch" and "Visible connection status" scenarios, including no send before join is accepted
-- [ ] 3.2 Implement nick-taken handling through the nickname-prompt callback (re-prompt, null result leaves it connected but not joined); verify tests for the "Prompt for another nickname when taken" scenarios
-- [ ] 3.3 Implement reconnect with 1s/2s/4s/8s/15s delays via `TimeProvider`, rejoin, 401 stopping the loop, and 3 quiet same-nick retries 1s apart before prompting; verify tests with fake transport and fake time for every scenario in "Reconnect automatically after a drop", "Quietly retry the same nickname on reconnect" and "Bad token stops the client"
-- [ ] 3.4 Implement presence (initialised and rebuilt from each join, updated on joined and left) and the chat, notice and gap-marker event stream (no marker on first join, none for the initial list); verify tests for every scenario in `channel-presence` and "Mark possible missed messages after reconnect"
-- [ ] 3.5 Implement send rules (refuse when not joined without queueing, empty input ignored, over-limit blocked, server too-long rejection surfaced); verify tests for the send scenarios in `chat-messaging`
+- [x] 3.1 Implement connect, join and the status stream (connecting, joined, reconnecting, stopped with reason); verify tests for the "Connect and join on launch" and "Visible connection status" scenarios, including no send before join is accepted
+- [x] 3.2 Implement nick-taken handling through the nickname-prompt callback (re-prompt, null result leaves it connected but not joined); verify tests for the "Prompt for another nickname when taken" scenarios
+- [x] 3.3 Implement reconnect with 1s/2s/4s/8s/15s delays via `TimeProvider`, rejoin, 401 stopping the loop, and 3 quiet same-nick retries 1s apart before prompting; verify tests with fake transport and fake time for every scenario in "Reconnect automatically after a drop", "Quietly retry the same nickname on reconnect" and "Bad token stops the client"
+- [x] 3.4 Implement presence (initialised and rebuilt from each join, updated on joined and left) and the chat, notice and gap-marker event stream (no marker on first join, none for the initial list); verify tests for every scenario in `channel-presence` and "Mark possible missed messages after reconnect"
+- [x] 3.5 Implement send rules (refuse when not joined without queueing, empty input ignored, over-limit blocked, server too-long rejection surfaced); verify tests for the send scenarios in `chat-messaging`
 
 ## 4. Configuration
 
