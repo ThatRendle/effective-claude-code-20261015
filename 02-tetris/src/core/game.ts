@@ -2,7 +2,7 @@ import { draw, type Rng } from "./bag";
 import { collides, emptyBoard, HEIGHT, place, WIDTH, type Board, type Piece } from "./board";
 import type { Kind } from "./pieces";
 
-export type Action = "left" | "right" | "rotate" | "softDrop" | "hardDrop" | "tick" | "restart";
+export type Action = "left" | "right" | "rotate" | "softDrop" | "hardDrop" | "tick" | "restart" | "togglePause";
 
 export interface GameState {
   readonly board: Board;
@@ -10,7 +10,7 @@ export interface GameState {
   readonly next: Kind;
   readonly queue: readonly Kind[];
   readonly score: number;
-  readonly status: "playing" | "gameOver";
+  readonly status: "playing" | "paused" | "gameOver";
   readonly rng: Rng;
 }
 
@@ -94,6 +94,9 @@ export function step(state: GameState, action: Action): GameState {
   if (state.status === "gameOver") {
     return action === "restart" ? newGame(state.rng) : state;
   }
+  if (state.status === "paused") {
+    return action === "togglePause" ? { ...state, status: "playing" } : state;
+  }
   switch (action) {
     case "left":
       return tryMove(state, -1);
@@ -108,5 +111,7 @@ export function step(state: GameState, action: Action): GameState {
       return hardDrop(state);
     case "restart":
       return state;
+    case "togglePause":
+      return { ...state, status: "paused" };
   }
 }

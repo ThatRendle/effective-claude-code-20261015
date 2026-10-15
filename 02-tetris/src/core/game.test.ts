@@ -256,6 +256,50 @@ describe("game over", () => {
   });
 });
 
+describe("pause", () => {
+  const playing = () => state({ current: piece("T", 3, 5), score: 300 });
+
+  it("pauses during play without changing board, piece or score", () => {
+    const g = playing();
+    const paused = step(g, "togglePause");
+    expect(paused.status).toBe("paused");
+    expect(paused.board).toEqual(g.board);
+    expect(paused.current).toEqual(g.current);
+    expect(paused.score).toBe(g.score);
+  });
+
+  it("ignores gravity while paused", () => {
+    const paused = step(playing(), "togglePause");
+    expect(step(paused, "tick")).toEqual(paused);
+  });
+
+  it("ignores movement, rotation and drop input while paused", () => {
+    const paused = step(playing(), "togglePause");
+    for (const action of ["left", "right", "rotate", "softDrop", "hardDrop"] as const) {
+      expect(step(paused, action)).toEqual(paused);
+    }
+  });
+
+  it("resumes from the same board, piece and score", () => {
+    const g = playing();
+    const resumed = step(step(g, "togglePause"), "togglePause");
+    expect(resumed).toEqual(g);
+  });
+
+  it("does nothing after game over", () => {
+    const board = emptyBoard().map((r) => [...r]);
+    for (const y of [0, 1]) for (let x = 0; x < WIDTH - 1; x++) board[y]![x] = "O";
+    const over = step(state({ board, current: piece("O", 4, 5), next: "T" }), "hardDrop");
+    expect(over.status).toBe("gameOver");
+    expect(step(over, "togglePause")).toBe(over);
+  });
+
+  it("stays paused and unchanged on restart", () => {
+    const paused = step(playing(), "togglePause");
+    expect(step(paused, "restart")).toBe(paused);
+  });
+});
+
 describe("restart", () => {
   it("starts a new empty game with score 0 after game over", () => {
     const over = { ...step(nearlyFull(), "hardDrop"), score: 900 };

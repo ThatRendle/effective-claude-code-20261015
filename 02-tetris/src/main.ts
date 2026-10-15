@@ -9,6 +9,7 @@ const KEY_ACTIONS: Record<string, Action> = {
   ArrowDown: "softDrop",
   " ": "hardDrop",
   Enter: "restart",
+  Escape: "togglePause",
 };
 
 const render = createRenderer();

@@ -24,10 +24,15 @@
             <li><kbd>↑</kbd> rotate</li>
             <li><kbd>↓</kbd> soft drop</li>
             <li><kbd>Space</kbd> hard drop</li>
+            <li><kbd>Esc</kbd> pause / resume</li>
             <li><kbd>Enter</kbd> restart after game over</li>
           </ul>
         </section>
       </aside>
+      <div id="paused" class="gameover" hidden>
+        <p class="gameover-title">Paused</p>
+        <p class="gameover-hint">Press <kbd>Esc</kbd> to resume</p>
+      </div>
       <div id="gameover" class="gameover" hidden>
         <p class="gameover-title">Game over</p>
         <p>Final score: <span id="final-score">0</span></p>

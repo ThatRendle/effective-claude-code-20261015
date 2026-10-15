@@ -30,6 +30,7 @@ export function createRenderer() {
   const board = context("board");
   const preview = context("preview");
   const score = text("score");
+  const paused = text("paused");
   const gameOver = text("gameover");
   const finalScore = text("final-score");
 
@@ -60,7 +61,7 @@ export function createRenderer() {
       }),
     );
 
-    if (state.status === "playing") {
+    if (state.status !== "gameOver") {
       for (const [x, y] of pieceCells(state.current)) {
         if (y >= 0) drawCell(ctx, x, y, cell, state.current.kind);
       }
@@ -87,6 +88,7 @@ export function createRenderer() {
     drawBoard(state);
     drawPreview(state.next);
     score.textContent = String(state.score);
+    paused.hidden = state.status !== "paused";
     gameOver.hidden = state.status !== "gameOver";
     finalScore.textContent = String(state.score);
   };
