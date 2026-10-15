@@ -39,6 +39,12 @@ With a `notirc.json` or environment variables set, no arguments are needed:
 NOTIRC_SERVER=ws://localhost:8080 NOTIRC_TOKEN=any-token NOTIRC_NICK=emmz dotnet run --project NotIrc.App
 ```
 
+## Emoji
+
+The 😀 button beside the input opens a picker of common emoji. Choosing one inserts it at the caret (or replaces the
+selected text) and leaves the picker open for more. Emoji count as UTF-8 bytes against the 1024-byte limit like any
+other text, so the counter and the "Too long" warning apply to them.
+
 ## Checks
 
 `make gates` runs build, test, format and spec validation.

@@ -13,8 +13,8 @@
 
 ## 3. Human verification and docs
 
-- [ ] 3.1 Stop for human verification of look and feel (emoji render, flyout placement, light/dark theme) with a copy-pasteable `dotnet run` recipe; record Emmz's result in the devlog
-- [ ] 3.2 Mention the emoji button in `README.md` and verify the text matches the running app
+- [x] 3.1 Stop for human verification of look and feel (emoji render, flyout placement, light/dark theme) with a copy-pasteable `dotnet run` recipe; record Emmz's result in the devlog
+- [x] 3.2 Mention the emoji button in `README.md` and verify the text matches the running app
 
 ## Workflow follow-up
 
