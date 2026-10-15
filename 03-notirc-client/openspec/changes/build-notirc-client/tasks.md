@@ -2,10 +2,10 @@
 
 ## 1. Solution scaffold and gates
 
-- [ ] 1.1 Add `global.json` pinning SDK 10.0.x (`rollForward: latestFeature`, `allowPrerelease: false`); verify `dotnet --version` prints a 10.0.x version in the repo root
-- [ ] 1.2 Create `NotIrc.slnx` with `NotIrc.Core` (class library), `NotIrc.App` (Avalonia 12 app, compiled bindings on) and `NotIrc.Tests` (xUnit v3 with `Avalonia.Headless.XUnit`), plus `.gitignore` entries for build output and `notirc.json`; verify `dotnet build NotIrc.slnx --configuration Release -warnaserror` succeeds
-- [ ] 1.3 Enable analyzers in build (`EnforceCodeStyleInBuild`, `.editorconfig`) and add one trivial passing test; verify `dotnet test --solution NotIrc.slnx --configuration Release` runs it and exits non-zero when the test is made to fail. If the command needs a `global.json` runner setting or differs, fix it and update the gate table in design.md
-- [ ] 1.4 Verify `dotnet format NotIrc.slnx --verify-no-changes` exits 0 on the scaffold and non-zero on a deliberately misformatted file
+- [x] 1.1 Add `global.json` pinning SDK 10.0.x (`rollForward: latestFeature`, `allowPrerelease: false`); verify `dotnet --version` prints a 10.0.x version in the repo root
+- [x] 1.2 Create `NotIrc.slnx` with `NotIrc.Core` (class library), `NotIrc.App` (Avalonia 12 app, compiled bindings on) and `NotIrc.Tests` (xUnit v3 with `Avalonia.Headless.XUnit`), plus `.gitignore` entries for build output and `notirc.json`; verify `dotnet build NotIrc.slnx --configuration Release -warnaserror` succeeds
+- [x] 1.3 Enable analyzers in build (`EnforceCodeStyleInBuild`, `.editorconfig`) and add one trivial passing test; verify `dotnet test --solution NotIrc.slnx --configuration Release` runs it and exits non-zero when the test is made to fail. If the command needs a `global.json` runner setting or differs, fix it and update the gate table in design.md
+- [x] 1.4 Verify `dotnet format NotIrc.slnx --verify-no-changes` exits 0 on the scaffold and non-zero on a deliberately misformatted file
 
 ## 2. Protocol and transport (Core)
 

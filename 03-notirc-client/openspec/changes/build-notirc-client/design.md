@@ -71,7 +71,7 @@ All run from the repository root, non-interactively, and exit non-zero on failur
 | format | `dotnet format NotIrc.slnx --verify-no-changes` |
 | lint | none: Roslyn analyzers run inside build via `-warnaserror` and `EnforceCodeStyleInBuild` |
 
-The test command is unverified. xUnit v3 runs on Microsoft.Testing.Platform, and `dotnet test --solution` may need the runner enabled in `global.json`. Task 1 proves the command on the first empty test project; if it differs, correct it here and in the Makefile.
+The test command is verified (task 1.3). xUnit v3 runs on Microsoft.Testing.Platform, and `dotnet test --solution` fails with `MSB1001: Unknown switch` unless `global.json` sets `"test": { "runner": "Microsoft.Testing.Platform" }`, which it now does. The command itself is unchanged.
 
 ## Risks / Trade-offs
 
