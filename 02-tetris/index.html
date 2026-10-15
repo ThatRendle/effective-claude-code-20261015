@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tetris</title>
+  </head>
+  <body>
+    <main class="game">
+      <canvas id="board" width="300" height="600" aria-label="Tetris board"></canvas>
+      <aside class="panel">
+        <section>
+          <h2>Next</h2>
+          <canvas id="preview" width="120" height="120" aria-label="Next piece"></canvas>
+        </section>
+        <section>
+          <h2>Score</h2>
+          <p id="score" class="score">0</p>
+        </section>
+        <section class="controls">
+          <h2>Controls</h2>
+          <ul>
+            <li><kbd>←</kbd> <kbd>→</kbd> move</li>
+            <li><kbd>↑</kbd> rotate</li>
+            <li><kbd>↓</kbd> soft drop</li>
+            <li><kbd>Space</kbd> hard drop</li>
+            <li><kbd>Enter</kbd> restart after game over</li>
+          </ul>
+        </section>
+      </aside>
+      <div id="gameover" class="gameover" hidden>
+        <p class="gameover-title">Game over</p>
+        <p>Final score: <span id="final-score">0</span></p>
+        <p class="gameover-hint">Press <kbd>Enter</kbd> to play again</p>
+      </div>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
