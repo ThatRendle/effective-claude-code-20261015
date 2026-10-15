@@ -7,9 +7,9 @@
 
 ## 2. Picker UI
 
-- [ ] 2.1 Add the emoji button and category-grouped `Flyout` grid beside `InputBox` in `MainWindow.axaml`; verify `make build` passes with `-warnaserror` (compiled bindings)
-- [ ] 2.2 Wire the pick handler in `MainWindow.axaml.cs` to use the helper, set the caret, refocus `InputBox`; headless `WindowTests` assert text, caret, focus, and insertion while not joined
-- [ ] 2.3 Headless test: inserting a 4-byte emoji at 1022 bytes shows `1026/1024`, the "Too long" warning, and a disabled Send button; removing it clears them
+- [x] 2.1 Add the emoji button and category-grouped `Flyout` grid beside `InputBox` in `MainWindow.axaml`; verify `make build` passes with `-warnaserror` (compiled bindings)
+- [x] 2.2 Wire the pick handler in `MainWindow.axaml.cs` to use the helper, set the caret, refocus `InputBox`; headless `WindowTests` assert text, caret, focus, and insertion while not joined
+- [x] 2.3 Headless test: inserting a 4-byte emoji at 1022 bytes shows `1026/1024`, the "Too long" warning, and a disabled Send button; removing it clears them
 
 ## 3. Human verification and docs
 

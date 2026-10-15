@@ -231,4 +231,86 @@ public sealed class WindowTests
         Assert.True(list.Opacity < 1, "presence list should be dimmed while reconnecting");
         window.Close();
     });
+
+    /// <summary>Opens the emoji picker and clicks the button showing <paramref name="emoji"/>.</summary>
+    private static async Task PickEmojiAsync(Window window, string emoji)
+    {
+        var flyout = (Flyout)window.FindControl<Button>("EmojiButton")!.Flyout!;
+        if (!flyout.IsOpen)
+        {
+            flyout.ShowAt(window.FindControl<Button>("EmojiButton")!);
+        }
+
+        Button? pick = null;
+        await UiUntilAsync(
+            () => (pick = ((Control)flyout.Content!).GetVisualDescendants().OfType<Button>().FirstOrDefault(b => b.Content as string == emoji)) is not null,
+            $"emoji {emoji} in the picker");
+        pick!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    }
+
+    [Fact]
+    public Task Picking_an_emoji_inserts_it_at_the_caret_and_refocuses_the_input() => Ui.RunAsync(async () =>
+    {
+        await using var h = new SessionHarness();
+        var (window, vm) = Show(h);
+        using var _ = vm;
+        var input = window.FindControl<TextBox>("InputBox")!;
+        input.Text = "hello world";
+        input.SelectionStart = 5;
+        input.SelectionEnd = 5;
+
+        await PickEmojiAsync(window, "😀");
+
+        Assert.Equal("hello😀 world", input.Text);
+        Assert.Equal("hello😀 world", vm.InputText);
+        Assert.Equal(7, input.CaretIndex);
+        Assert.True(input.IsFocused);
+        window.Close();
+    });
+
+    [Fact]
+    public Task Picking_an_emoji_replaces_the_selection_even_while_disconnected() => Ui.RunAsync(async () =>
+    {
+        await using var h = new SessionHarness();
+        var (window, vm) = Show(h);
+        using var _ = vm;
+        Assert.NotEqual(SessionState.Joined, vm.Status.State);
+        var input = window.FindControl<TextBox>("InputBox")!;
+        input.Text = "hello world";
+        input.SelectionStart = 6;
+        input.SelectionEnd = 11;
+
+        await PickEmojiAsync(window, "🚀");
+
+        Assert.Equal("hello 🚀", input.Text);
+        window.Close();
+    });
+
+    [Fact]
+    public Task Picked_emoji_obey_the_byte_limit() => Ui.RunAsync(async () =>
+    {
+        await using var h = new SessionHarness();
+        var (window, vm) = Show(h);
+        using var _ = vm;
+        await h.JoinAsync();
+        await UiUntilAsync(() => vm.Status.State == SessionState.Joined, "joined");
+        var input = window.FindControl<TextBox>("InputBox")!;
+        var send = window.FindControl<Button>("SendButton")!;
+        var warning = window.FindControl<TextBlock>("TooLongWarning")!;
+        input.Text = new string('a', 1022);
+        input.CaretIndex = 1022;
+        Assert.True(send.IsEnabled);
+
+        await PickEmojiAsync(window, "😀");
+
+        Assert.Equal("1026/1024", window.FindControl<TextBlock>("ByteCounter")!.Text);
+        Assert.True(warning.IsVisible);
+        Assert.False(send.IsEnabled);
+
+        input.Text = new string('a', 1022);
+        Assert.Equal("1022/1024", window.FindControl<TextBlock>("ByteCounter")!.Text);
+        Assert.False(warning.IsVisible);
+        Assert.True(send.IsEnabled);
+        window.Close();
+    });
 }

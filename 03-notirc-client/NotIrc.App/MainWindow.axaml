@@ -1,6 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:NotIrc.App.ViewModels"
+        xmlns:app="using:NotIrc.App"
         x:Class="NotIrc.App.MainWindow"
         x:DataType="vm:MainViewModel"
         Title="NotIrc" Width="900" Height="600" MinWidth="480" MinHeight="320">
@@ -40,19 +41,46 @@
     </Border>
 
     <!-- Input row -->
-    <Grid DockPanel.Dock="Bottom" ColumnDefinitions="*,Auto,Auto" Margin="12" ColumnSpacing="8">
+    <Grid DockPanel.Dock="Bottom" ColumnDefinitions="*,Auto,Auto,Auto" Margin="12" ColumnSpacing="8">
       <TextBox Grid.Column="0" Name="InputBox" PlaceholderText="Type a message…" AcceptsReturn="False"
                Text="{Binding InputText}">
         <TextBox.KeyBindings>
           <KeyBinding Gesture="Enter" Command="{Binding SendCommand}" />
         </TextBox.KeyBindings>
       </TextBox>
-      <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+      <Button Grid.Column="1" Name="EmojiButton" Content="😀" ToolTip.Tip="Insert emoji">
+        <Button.Flyout>
+          <Flyout Placement="TopEdgeAlignedRight">
+            <ScrollViewer MaxHeight="320" Width="340">
+              <ItemsControl ItemsSource="{x:Static app:EmojiCatalogue.Categories}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate x:DataType="app:EmojiCategory">
+                    <StackPanel Margin="0,0,0,8" Spacing="4">
+                      <TextBlock Text="{Binding Name}" FontWeight="SemiBold" Classes="dim" />
+                      <ItemsControl ItemsSource="{Binding Emoji}">
+                        <ItemsControl.ItemsPanel>
+                          <ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                          <DataTemplate x:DataType="x:String">
+                            <Button Content="{Binding}" Padding="6,4" Background="Transparent" Click="OnEmojiClick" />
+                          </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                      </ItemsControl>
+                    </StackPanel>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </ScrollViewer>
+          </Flyout>
+        </Button.Flyout>
+      </Button>
+      <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="2">
         <TextBlock Name="ByteCounter" HorizontalAlignment="Right" Classes="dim" Text="{Binding ByteCounterText}" />
         <TextBlock Name="TooLongWarning" HorizontalAlignment="Right" Foreground="Firebrick" FontWeight="SemiBold"
                    Text="Too long" IsVisible="{Binding IsOverLimit}" />
       </StackPanel>
-      <Button Grid.Column="2" Name="SendButton" Content="Send" IsDefault="False"
+      <Button Grid.Column="3" Name="SendButton" Content="Send" IsDefault="False"
               Command="{Binding SendCommand}" IsEnabled="{Binding CanSend}" />
     </Grid>
 
