@@ -34,8 +34,8 @@
 
 ## 6. Integration checks
 
-- [ ] 6.1 Run the client against the local Docker server (`ghcr.io/thatrendle/notirc`) with two instances; verify messages flow both ways, presence updates, a taken nickname prompts, an over-limit message is blocked, and stopping and restarting the server triggers reconnect with the gap notice
-- [ ] 6.2 Run all three gates (build, test, format) from the repository root; verify each exits 0
+- [x] 6.1 Run the client against the local Docker server (`ghcr.io/thatrendle/notirc`) with two instances; verify messages flow both ways, presence updates, a taken nickname prompts, an over-limit message is blocked, and stopping and restarting the server triggers reconnect with the gap notice
+- [x] 6.2 Run all three gates (build, test, format) from the repository root; verify each exits 0
 
 ## 7. Fix: own-message contrast
 
