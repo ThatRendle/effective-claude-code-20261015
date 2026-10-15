@@ -9,9 +9,9 @@
 
 ## 2. Protocol and transport (Core)
 
-- [ ] 2.1 Define the protocol message types and JSON encode/decode for join, message and the server messages in `NOTIRC.md`, with unknown types parsed as "ignored"; verify unit tests round-trip every documented message and ignore an unknown one
-- [ ] 2.2 Add the transport abstraction and the `ClientWebSocket` implementation, with HTTP 401 on connect reported as a distinct unauthorized failure; verify unit tests against a scripted fake cover send, receive and close, and verify the unauthorized path with a loopback test server
-- [ ] 2.3 Add the UTF-8 byte-limit check (1024) as a pure function; verify tests cover ASCII, multibyte, exactly 1024 bytes and 1025 bytes
+- [x] 2.1 Define the protocol message types and JSON encode/decode for join, message and the server messages in `NOTIRC.md`, with unknown types parsed as "ignored"; verify unit tests round-trip every documented message and ignore an unknown one
+- [x] 2.2 Add the transport abstraction and the `ClientWebSocket` implementation, with HTTP 401 on connect reported as a distinct unauthorized failure; verify unit tests against a scripted fake cover send, receive and close, and verify the unauthorized path with a loopback test server
+- [x] 2.3 Add the UTF-8 byte-limit check (1024) as a pure function; verify tests cover ASCII, multibyte, exactly 1024 bytes and 1025 bytes
 
 ## 3. Session state machine (Core)
 
