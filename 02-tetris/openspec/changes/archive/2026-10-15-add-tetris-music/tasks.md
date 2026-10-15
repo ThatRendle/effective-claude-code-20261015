@@ -27,4 +27,4 @@
 
 - [x] 5.1 Unit-test the melody table and the effect-mapping helper next to the existing tests
 - [x] 5.2 Run the existing tests and type-check/build
-- [ ] 5.3 Manually check in the browser: silent before first key; music plays while playing; stops on Escape and returns on resume; stops on game over with the game-over sound; restarts from the top on Enter; hard drop, line clear and four-line clear sounds; `M` mutes everything in every status without changing the game; mute survives a reload
+- [x] 5.3 Manually check in the browser: silent before first key; music plays while playing; stops on Escape and returns on resume; stops on game over with the game-over sound; restarts from the top on Enter; hard drop, line clear and four-line clear sounds; `M` mutes everything in every status without changing the game; mute survives a reload
