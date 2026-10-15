@@ -1,0 +1,16 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:NotIrc.App.ViewModels"
+        x:Class="NotIrc.App.NicknamePromptWindow"
+        x:DataType="vm:NicknamePromptViewModel"
+        Title="Choose a nickname" Width="380" SizeToContent="Height" CanResize="False"
+        WindowStartupLocation="CenterOwner">
+  <StackPanel Margin="16" Spacing="12">
+    <TextBlock Name="MessageText" TextWrapping="Wrap" Text="{Binding Message}" />
+    <TextBox Name="NicknameBox" Text="{Binding Nickname}" />
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+      <Button Name="CancelButton" Content="Cancel" Click="OnCancel" />
+      <Button Name="OkButton" Content="OK" IsDefault="True" IsEnabled="{Binding CanConfirm}" Click="OnConfirm" />
+    </StackPanel>
+  </StackPanel>
+</Window>

@@ -1,9 +1,86 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:vm="using:NotIrc.App.ViewModels"
         x:Class="NotIrc.App.MainWindow"
-        Title="NotIrc.App">
-    Welcome to Avalonia!
+        x:DataType="vm:MainViewModel"
+        Title="NotIrc" Width="900" Height="600" MinWidth="480" MinHeight="320">
+  <Window.Styles>
+    <Style Selector="Border.own">
+      <Setter Property="Background" Value="{DynamicResource SystemAccentColorLight3}" />
+      <Setter Property="Opacity" Value="1" />
+    </Style>
+    <Style Selector="TextBlock.ok"><Setter Property="Foreground" Value="Green" /></Style>
+    <Style Selector="TextBlock.busy"><Setter Property="Foreground" Value="DarkOrange" /></Style>
+    <Style Selector="TextBlock.bad"><Setter Property="Foreground" Value="Firebrick" /></Style>
+    <Style Selector="TextBlock.dim"><Setter Property="Opacity" Value="0.65" /></Style>
+    <Style Selector="Border.notice TextBlock"><Setter Property="FontStyle" Value="Italic" /><Setter Property="Opacity" Value="0.7" /></Style>
+  </Window.Styles>
+
+  <DockPanel>
+    <!-- Status bar -->
+    <Border DockPanel.Dock="Top" Padding="12,8" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
+      <DockPanel LastChildFill="False">
+        <TextBlock DockPanel.Dock="Left" Name="StatusLabel" FontWeight="SemiBold"
+                   Text="{Binding StatusText}" Classes.ok="{Binding IsStatusOk}" Classes.busy="{Binding IsStatusBusy}" Classes.bad="{Binding IsStatusBad}" />
+        <TextBlock DockPanel.Dock="Left" Margin="12,0,0,0" Classes="dim" Text="{Binding ServerAddress}" />
+        <Button DockPanel.Dock="Right" Margin="12,0,0,0" Content="Choose nickname…"
+                Command="{Binding ChooseNicknameCommand}" IsVisible="{Binding ShowChooseNickname}" />
+        <TextBlock DockPanel.Dock="Right" Name="NicknameLabel" FontWeight="SemiBold" Text="{Binding Nickname}" />
+      </DockPanel>
+    </Border>
+
+    <!-- Token-rejected / permanent error banner -->
+    <Border DockPanel.Dock="Top" Name="ErrorBanner" Padding="12,8" Background="Firebrick"
+            IsVisible="{Binding ErrorText, Converter={x:Static ObjectConverters.IsNotNull}}">
+      <TextBlock Foreground="White" TextWrapping="Wrap" Text="{Binding ErrorText}" />
+    </Border>
+
+    <!-- Input row -->
+    <Grid DockPanel.Dock="Bottom" ColumnDefinitions="*,Auto,Auto" Margin="12" ColumnSpacing="8">
+      <TextBox Grid.Column="0" Name="InputBox" PlaceholderText="Type a message…" AcceptsReturn="False"
+               Text="{Binding InputText}">
+        <TextBox.KeyBindings>
+          <KeyBinding Gesture="Enter" Command="{Binding SendCommand}" />
+        </TextBox.KeyBindings>
+      </TextBox>
+      <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+        <TextBlock Name="ByteCounter" HorizontalAlignment="Right" Classes="dim" Text="{Binding ByteCounterText}" />
+        <TextBlock Name="TooLongWarning" HorizontalAlignment="Right" Foreground="Firebrick" FontWeight="SemiBold"
+                   Text="Too long" IsVisible="{Binding IsOverLimit}" />
+      </StackPanel>
+      <Button Grid.Column="2" Name="SendButton" Content="Send" IsDefault="False"
+              Command="{Binding SendCommand}" IsEnabled="{Binding CanSend}" />
+    </Grid>
+
+    <!-- Presence -->
+    <Border DockPanel.Dock="Right" Width="180" BorderThickness="1,0,0,0" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
+      <DockPanel>
+        <TextBlock DockPanel.Dock="Top" Margin="12,8" FontWeight="SemiBold" Text="Online" />
+        <ListBox Name="PresenceList" ItemsSource="{Binding Presence}">
+          <ListBox.ItemTemplate>
+            <DataTemplate x:DataType="x:String">
+              <TextBlock Text="{Binding}" />
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </DockPanel>
+    </Border>
+
+    <!-- Message log -->
+    <ScrollViewer Name="LogScroll">
+      <ItemsControl Name="LogList" ItemsSource="{Binding Entries}" Margin="12,8">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="vm:EntryViewModel">
+            <Border Classes.own="{Binding IsOwn}" Classes.notice="{Binding IsNotice}" Padding="4,2" CornerRadius="4">
+              <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="8">
+                <TextBlock Grid.Column="0" Classes="dim" Text="{Binding Time}" />
+                <TextBlock Grid.Column="1" FontWeight="SemiBold" Text="{Binding Nick}" IsVisible="{Binding IsChat}" />
+                <TextBlock Grid.Column="2" TextWrapping="Wrap" Text="{Binding Text}" />
+              </Grid>
+            </Border>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </ScrollViewer>
+  </DockPanel>
 </Window>

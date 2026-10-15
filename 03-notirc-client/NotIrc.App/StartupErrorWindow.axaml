@@ -1,0 +1,20 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:NotIrc.App.ViewModels"
+        x:Class="NotIrc.App.StartupErrorWindow"
+        x:DataType="vm:StartupErrorViewModel"
+        Title="NotIrc" Width="560" SizeToContent="Height" CanResize="False"
+        WindowStartupLocation="CenterScreen">
+  <StackPanel Margin="20" Spacing="12">
+    <TextBlock Name="HeadingText" FontSize="18" FontWeight="SemiBold" Text="{Binding Heading}" />
+    <ItemsControl Name="ErrorList" ItemsSource="{Binding Errors}">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate x:DataType="x:String">
+          <TextBlock Margin="0,0,0,6" TextWrapping="Wrap" Foreground="Firebrick" Text="{Binding}" />
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+    <TextBlock Name="HintText" Opacity="0.7" TextWrapping="Wrap" Text="{Binding Hint}" />
+    <Button HorizontalAlignment="Right" Content="Close" IsDefault="True" Click="OnClose" />
+  </StackPanel>
+</Window>

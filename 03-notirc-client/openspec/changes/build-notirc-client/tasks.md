@@ -28,9 +28,9 @@
 
 ## 5. Avalonia app
 
-- [ ] 5.1 Build the main window and view-models (status bar, message log with timestamps, notices and own-message styling, presence list, input with byte counter and send command) bound to the session; verify headless tests render the window, show over-limit state and disable sending when over the limit or not joined
-- [ ] 5.2 Add the nickname prompt dialog (pre-filled with the rejected nickname) wired to the session callback, and the startup error view for missing settings and rejected token; verify headless tests for the prompt result path and for the error view text
-- [ ] 5.3 Wire startup: load settings, create the session, start connecting, and shut down cleanly on close; verify `dotnet run --project NotIrc.App` starts with valid settings and reports a missing setting without connecting
+- [x] 5.1 Build the main window and view-models (status bar, message log with timestamps, notices and own-message styling, presence list, input with byte counter and send command) bound to the session; verify headless tests render the window, show over-limit state and disable sending when over the limit or not joined
+- [x] 5.2 Add the nickname prompt dialog (pre-filled with the rejected nickname) wired to the session callback, and the startup error view for missing settings and rejected token; verify headless tests for the prompt result path and for the error view text
+- [x] 5.3 Wire startup: load settings, create the session, start connecting, and shut down cleanly on close; verify `dotnet run --project NotIrc.App` starts with valid settings and reports a missing setting without connecting
 
 ## 6. Integration checks
 
