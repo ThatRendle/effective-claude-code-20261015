@@ -2,8 +2,8 @@
 
 ## 1. Emoji catalogue and insertion
 
-- [ ] 1.1 Add `EmojiCatalogue` in `NotIrc.App` with categories of single-sequence emoji, plus a unit test asserting no duplicates, no empty categories and every entry non-empty
-- [ ] 1.2 Add a pure insertion helper (text, selection start/end, emoji → new text and caret index) and unit tests for caret insert, selection replace, start/end of text and non-BMP emoji (surrogate pair never split)
+- [x] 1.1 Add `EmojiCatalogue` in `NotIrc.App` with categories of single-sequence emoji, plus a unit test asserting no duplicates, no empty categories and every entry non-empty
+- [x] 1.2 Add a pure insertion helper (text, selection start/end, emoji → new text and caret index) and unit tests for caret insert, selection replace, start/end of text and non-BMP emoji (surrogate pair never split)
 
 ## 2. Picker UI
 
