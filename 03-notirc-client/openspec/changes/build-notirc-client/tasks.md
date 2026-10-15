@@ -37,6 +37,10 @@
 - [ ] 6.1 Run the client against the local Docker server (`ghcr.io/thatrendle/notirc`) with two instances; verify messages flow both ways, presence updates, a taken nickname prompts, an over-limit message is blocked, and stopping and restarting the server triggers reconnect with the gap notice
 - [ ] 6.2 Run all three gates (build, test, format) from the repository root; verify each exits 0
 
+## 7. Fix: own-message contrast
+
+- [x] 7.1 Replace the opaque light accent background on own messages with a translucent accent tint so the text stays readable in light and dark themes; verify a headless test that an own row has a translucent (not opaque) background and a non-own row has none
+
 ## Workflow follow-up
 
 - Run `/emmz:setup` to add the Makefile gate targets, `make deps` and the workflow section of `CLAUDE.md` before starting.

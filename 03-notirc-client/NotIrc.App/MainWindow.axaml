@@ -4,10 +4,13 @@
         x:Class="NotIrc.App.MainWindow"
         x:DataType="vm:MainViewModel"
         Title="NotIrc" Width="900" Height="600" MinWidth="480" MinHeight="320">
+  <Window.Resources>
+    <!-- A translucent accent tint keeps the theme text colour readable in both light and dark themes. -->
+    <SolidColorBrush x:Key="OwnEntryBrush" Color="{DynamicResource SystemAccentColor}" Opacity="0.25" />
+  </Window.Resources>
   <Window.Styles>
     <Style Selector="Border.own">
-      <Setter Property="Background" Value="{DynamicResource SystemAccentColorLight3}" />
-      <Setter Property="Opacity" Value="1" />
+      <Setter Property="Background" Value="{DynamicResource OwnEntryBrush}" />
     </Style>
     <Style Selector="TextBlock.ok"><Setter Property="Foreground" Value="Green" /></Style>
     <Style Selector="TextBlock.busy"><Setter Property="Foreground" Value="DarkOrange" /></Style>

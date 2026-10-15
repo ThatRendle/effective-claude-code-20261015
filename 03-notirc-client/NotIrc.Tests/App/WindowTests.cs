@@ -1,6 +1,8 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using NotIrc.App;
 using NotIrc.App.ViewModels;
 using NotIrc.Core.Protocol;
@@ -186,6 +188,29 @@ public sealed class WindowTests
         Assert.Equal("NotIrc can't start", window.FindControl<TextBlock>("HeadingText")!.Text);
         Assert.Equal(errors, window.FindControl<ItemsControl>("ErrorList")!.Items.Cast<string>());
         Assert.Contains("Nothing has been connected", window.FindControl<TextBlock>("HintText")!.Text);
+        window.Close();
+    });
+
+    [Fact]
+    public Task Own_rows_have_a_translucent_background_and_other_rows_have_none() => Ui.RunAsync(async () =>
+    {
+        await using var h = new SessionHarness("emmz");
+        var (window, vm) = Show(h);
+        using var _ = vm;
+        var transport = await h.JoinAsync("ann");
+
+        transport.Receive(Frames.Message("emmz", "mine"));
+        transport.Receive(Frames.Message("ann", "hers"));
+        await UiUntilAsync(() => vm.Entries.Count == 2, "two messages");
+        Dispatcher.UIThread.RunJobs();
+
+        var rows = window.GetVisualDescendants().OfType<Border>()
+            .Where(b => b.DataContext is EntryViewModel)
+            .ToDictionary(b => ((EntryViewModel)b.DataContext!).Text);
+
+        var own = Assert.IsAssignableFrom<ISolidColorBrush>(rows["mine"].Background);
+        Assert.True(own.Opacity * own.Color.A < 255, "own background must be translucent so theme text stays readable");
+        Assert.Null(rows["hers"].Background);
         window.Close();
     });
 }
