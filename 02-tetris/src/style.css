@@ -72,6 +72,18 @@ h2 {
   color: var(--muted);
 }
 
+.muted {
+  margin: 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.muted[hidden] {
+  display: none;
+}
+
 kbd {
   padding: 1px 6px;
   border: 1px solid #3a3f52;
