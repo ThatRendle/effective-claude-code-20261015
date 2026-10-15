@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo Pop</title>
+  </head>
+  <body>
+    <main class="app">
+      <h1>Todo <span>Pop!</span></h1>
+      <form id="add-form" autocomplete="off">
+        <input id="new-task" type="text" placeholder="What needs doing?" aria-label="New task" required />
+        <button type="submit">Add</button>
+      </form>
+      <p id="summary" class="summary"></p>
+      <ul id="list"></ul>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
