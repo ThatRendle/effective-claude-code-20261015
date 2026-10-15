@@ -23,8 +23,8 @@
 
 ## 4. Configuration
 
-- [ ] 4.1 Implement layered settings (optional `notirc.json`, `NOTIRC_` environment variables, `--server`/`--token`/`--nick`), server address normalisation to a connection URL, missing-setting errors and token redaction; verify tests for every `client-configuration` scenario, including precedence order
-- [ ] 4.2 Add `notirc.example.json` with a placeholder token and document launch options in `README.md`; verify the documented `dotnet run` command line works as written against the settings loader
+- [x] 4.1 Implement layered settings (optional `notirc.json`, `NOTIRC_` environment variables, `--server`/`--token`/`--nick`), server address normalisation to a connection URL, missing-setting errors and token redaction; verify tests for every `client-configuration` scenario, including precedence order
+- [x] 4.2 Add `notirc.example.json` with a placeholder token and document launch options in `README.md`; verify the documented `dotnet run` command line works as written against the settings loader
 
 ## 5. Avalonia app
 
