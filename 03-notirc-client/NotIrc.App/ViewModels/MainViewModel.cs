@@ -43,7 +43,7 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     public ObservableCollection<string> Presence { get; } = [];
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(StatusText), nameof(IsStatusOk), nameof(IsStatusBusy), nameof(IsStatusBad), nameof(CanSend), nameof(ShowChooseNickname), nameof(ErrorText))]
+    [NotifyPropertyChangedFor(nameof(StatusText), nameof(IsStatusOk), nameof(IsStatusBusy), nameof(IsStatusBad), nameof(IsPresenceStale), nameof(CanSend), nameof(ShowChooseNickname), nameof(ErrorText))]
     private SessionStatus _status;
 
     [ObservableProperty]
@@ -69,6 +69,9 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     public bool IsStatusBad => Status.State == SessionState.Stopped;
 
     public bool IsStatusBusy => !IsStatusOk && !IsStatusBad;
+
+    /// <summary>True while the list may be out of date: the connection is lost, and it is only rebuilt on the next join.</summary>
+    public bool IsPresenceStale => Status.State is SessionState.Reconnecting or SessionState.Stopped;
 
     /// <summary>The permanent-failure message, or null while the client is still trying.</summary>
     public string? ErrorText => Status is { State: SessionState.Stopped, StopReason: StopReason.TokenRejected }

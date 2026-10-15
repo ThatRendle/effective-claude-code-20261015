@@ -21,7 +21,13 @@ public partial class MainWindow : Window
         Closed += (_, _) => viewModel.Entries.CollectionChanged -= OnEntriesChanged;
     }
 
-    // The log keeps everything, so keep the newest entry in view.
-    private void OnEntriesChanged(object? sender, NotifyCollectionChangedEventArgs e) =>
-        Dispatcher.UIThread.Post(() => LogScroll.ScrollToEnd(), DispatcherPriority.Background);
+    // The log keeps everything. Follow new entries only if the user was already at the bottom, so reading back is not interrupted.
+    // This runs before the new entry is laid out, so the extent is still the old one.
+    private void OnEntriesChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (LogFollow.ShouldFollow(LogScroll.Offset.Y, LogScroll.Viewport.Height, LogScroll.Extent.Height))
+        {
+            Dispatcher.UIThread.Post(() => LogScroll.ScrollToEnd(), DispatcherPriority.Background);
+        }
+    }
 }

@@ -177,34 +177,16 @@ public sealed class SettingsLoaderTests : IDisposable
     [Fact]
     public void The_settings_file_is_ignored_by_version_control()
     {
-        var root = AppContext.BaseDirectory;
-        while (root is not null && !File.Exists(Path.Combine(root, "NotIrc.slnx")))
-        {
-            root = Path.GetDirectoryName(root);
-        }
-
-        Assert.NotNull(root);
-        Assert.Contains("notirc.json", File.ReadAllLines(Path.Combine(root, ".gitignore")).Select(l => l.Trim()));
+        Assert.Contains("notirc.json", File.ReadAllLines(RepoRoot.File(".gitignore")).Select(l => l.Trim()));
     }
 }
 
 public sealed class DocumentedLaunchTests
 {
-    private static string RepoFile(string name)
-    {
-        var dir = AppContext.BaseDirectory;
-        while (dir is not null && !File.Exists(Path.Combine(dir, "NotIrc.slnx")))
-        {
-            dir = Path.GetDirectoryName(dir);
-        }
-
-        return Path.Combine(dir!, name);
-    }
-
     [Fact]
     public void The_example_file_loads_with_its_placeholder_values()
     {
-        var result = SettingsLoader.Load([], RepoFile("notirc.example.json"), new Hashtable());
+        var result = SettingsLoader.Load([], RepoRoot.File("notirc.example.json"), new Hashtable());
 
         Assert.True(result.IsValid);
         Assert.Equal("your-nickname", result.Settings!.Nickname);
@@ -215,7 +197,7 @@ public sealed class DocumentedLaunchTests
     [InlineData("--server ws://localhost:8080 --token any-token --nick emmz", "ws://localhost:8080/ws?token=any-token")]
     public void The_documented_argument_forms_load(string args, string expectedUrl)
     {
-        var result = SettingsLoader.Load(args.Split(' '), RepoFile("absent.json"), new Hashtable());
+        var result = SettingsLoader.Load(args.Split(' '), RepoRoot.File("absent.json"), new Hashtable());
 
         Assert.Equal(new Uri(expectedUrl), result.Settings!.ConnectionUrl);
     }

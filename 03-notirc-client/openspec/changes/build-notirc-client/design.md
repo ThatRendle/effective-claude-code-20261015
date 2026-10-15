@@ -58,7 +58,7 @@ CommunityToolkit.Mvvm source generators (`[ObservableProperty]`, `[RelayCommand]
 
 ### Testing
 - Core: xUnit v3 unit tests against the fake transport and fake time, covering each spec scenario for session, messaging and presence.
-- App: a few `Avalonia.Headless.XUnit` smoke tests (main window renders, send disabled when over the limit, nickname prompt wiring).
+- App: a few `Avalonia.Headless` smoke tests, run through `HeadlessUnitTestSession` (`Avalonia.Headless.XUnit` does not work with xunit.v3 4.x): main window renders, send disabled when over the limit, nickname prompt wiring.
 - Manual and optional: a run against the local Docker server (`docker run -e NOTIRC_TOKEN=<token> -p 8080:8080 ghcr.io/thatrendle/notirc:latest`, then `--server ws://localhost:8080`).
 
 ### Gate commands

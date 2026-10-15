@@ -227,4 +227,40 @@ public sealed class MainViewModelTests
         Assert.Equal("Disconnected: token rejected", vm.StatusText);
         Assert.Contains("rejected the token", vm.ErrorText);
     }
+
+    [Fact]
+    public async Task Presence_is_stale_only_while_the_connection_is_lost()
+    {
+        await using var h = new SessionHarness();
+        using var vm = Create(h);
+        Assert.False(vm.IsPresenceStale); // connecting: nothing shown yet
+
+        var transport = await h.JoinAsync("ann");
+        await Wait.UntilAsync(() => vm.Status.State == SessionState.Joined, "joined");
+        Assert.False(vm.IsPresenceStale);
+
+        transport.Drop();
+        await Wait.UntilAsync(() => vm.IsPresenceStale, "stale while reconnecting");
+        Assert.Equal(["ann", "emmz"], vm.Presence); // still shown, just dimmed
+
+        var second = h.Factory.EnqueueConnection();
+        await h.Time.AdvanceAfterNextDelayAsync(ReconnectPolicy.DelayBefore(0));
+        await Wait.ForSentAsync(second, 1);
+        second.Receive(Frames.JoinOk("bob"));
+        await Wait.UntilAsync(() => !vm.IsPresenceStale, "fresh after rejoin");
+        Assert.Equal(["bob", "emmz"], vm.Presence);
+    }
+
+    [Fact]
+    public async Task Presence_is_stale_after_the_client_stops()
+    {
+        await using var h = new SessionHarness();
+        using var vm = Create(h);
+        h.Factory.EnqueueFailure(new UnauthorizedTransportException());
+
+        h.Session.Start();
+        await Wait.UntilAsync(() => vm.Status.State == SessionState.Stopped, "stopped");
+
+        Assert.True(vm.IsPresenceStale);
+    }
 }

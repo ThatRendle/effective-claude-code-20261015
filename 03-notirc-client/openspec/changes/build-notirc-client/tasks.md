@@ -41,6 +41,13 @@
 
 - [x] 7.1 Replace the opaque light accent background on own messages with a translucent accent tint so the text stays readable in light and dark themes; verify a headless test that an own row has a translucent (not opaque) background and a non-own row has none
 
+## 8. Review fixes: test setup and log/presence polish
+
+- [x] 8.1 Replace the unusable `Avalonia.Headless.XUnit` reference in `NotIrc.Tests` with `Avalonia.Headless` 12.0.4 and update design.md's Testing section to match; verify `make gates` is green
+- [x] 8.2 Share the repo-root lookup used by the settings tests in one test helper; verify the settings tests still pass and no duplicate lookup remains
+- [x] 8.3 Keep the message log following new entries only while the user is at the bottom; verify unit tests for the follow decision (at bottom, scrolled up, content shorter than the view)
+- [x] 8.4 Grey out the presence list while the status is reconnecting or disconnected; verify view-model tests for when it is stale and a headless test that the list is dimmed
+
 ## Workflow follow-up
 
 - Run `/emmz:setup` to add the Makefile gate targets, `make deps` and the workflow section of `CLAUDE.md` before starting.

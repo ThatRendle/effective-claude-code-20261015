@@ -213,4 +213,22 @@ public sealed class WindowTests
         Assert.Null(rows["hers"].Background);
         window.Close();
     });
+
+    [Fact]
+    public Task Presence_list_is_dimmed_while_reconnecting() => Ui.RunAsync(async () =>
+    {
+        await using var h = new SessionHarness("emmz");
+        var (window, vm) = Show(h);
+        using var _ = vm;
+        var transport = await h.JoinAsync("ann");
+        await UiUntilAsync(() => vm.Status.State == SessionState.Joined, "joined");
+        var list = window.FindControl<ListBox>("PresenceList")!;
+        Assert.Equal(1, list.Opacity);
+
+        transport.Drop();
+        await UiUntilAsync(() => vm.Status.State == SessionState.Reconnecting, "reconnecting");
+
+        Assert.True(list.Opacity < 1, "presence list should be dimmed while reconnecting");
+        window.Close();
+    });
 }
