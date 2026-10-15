@@ -98,8 +98,9 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     {
         var text = InputText;
         _lastSent = text;
-        if (await _session.SendAsync(text) == SendResult.Sent)
+        if (await _session.SendAsync(text) == SendResult.Sent && InputText == text)
         {
+            // Only clear what was sent: anything typed while the send was in flight is the next message.
             InputText = "";
         }
     }

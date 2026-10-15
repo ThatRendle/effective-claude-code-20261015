@@ -29,7 +29,7 @@ public static class SettingsLoader
                 .AddCommandLine(args.ToArray())
                 .Build();
         }
-        catch (Exception ex) when (ex is InvalidDataException or FormatException)
+        catch (Exception ex) when (ex is InvalidDataException or FormatException or IOException or UnauthorizedAccessException)
         {
             return new SettingsResult(null, [$"Could not read the settings file: {ex.Message}"]);
         }

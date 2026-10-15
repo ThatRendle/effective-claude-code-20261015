@@ -134,3 +134,46 @@ public class SendRulesTests
         Assert.Equal(SendResult.Sent, await h.Session.SendAsync("shorter"));
     }
 }
+
+public class SendRaceTests
+{
+    [Fact]
+    public async Task Sending_after_the_session_is_disposed_is_refused_not_thrown()
+    {
+        var h = new SessionHarness("emmz");
+        await h.JoinAsync();
+        await h.DisposeAsync();
+
+        var result = await h.Session.SendAsync("too late");
+
+        Assert.Equal(SendResult.NotJoined, result);
+    }
+
+    [Fact]
+    public async Task A_second_nickname_request_while_a_prompt_is_open_is_ignored()
+    {
+        var time = new TrackingTimeProvider();
+        var factory = new ScriptedTransportFactory(time);
+        var answer = new TaskCompletionSource<string?>();
+        var prompts = 0;
+        Task<string?> Prompt(string _) =>
+            Interlocked.Increment(ref prompts) == 1 ? Task.FromResult<string?>(null) : answer.Task;
+        await using var session = new ChannelSession(factory, new SessionOptions(SessionHarness.Url, "emmz"), Prompt, time);
+        var transport = factory.EnqueueConnection();
+        session.Start();
+        await Wait.ForSentAsync(transport, 1);
+        transport.Receive(Frames.JoinNickTaken());
+        await Wait.UntilAsync(() => session.Status.State == SessionState.NotJoined, "not joined");
+
+        var first = session.RequestNicknameAsync();
+        await Wait.UntilAsync(() => Volatile.Read(ref prompts) == 2, "the second prompt to open");
+        await session.RequestNicknameAsync(); // a repeated click while the prompt is open
+
+        Assert.Equal(2, Volatile.Read(ref prompts));
+        answer.SetResult("emmz2");
+        await first;
+        await Wait.ForSentAsync(transport, 2);
+        Assert.Equal(Frames.Join("emmz2"), transport.Sent[1]);
+        Assert.Equal(2, Volatile.Read(ref prompts));
+    }
+}

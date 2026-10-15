@@ -44,6 +44,17 @@ public class WebSocketTransportTests
     }
 
     [Fact]
+    public async Task Sending_after_dispose_is_a_transport_failure_not_an_object_disposed_error()
+    {
+        using var server = new LoopbackServer(EchoOnceAsync);
+        using var cts = new CancellationTokenSource(Timeout);
+        var transport = await new WebSocketTransportFactory().ConnectAsync(server.Url(LoopbackServer.GoodToken), cts.Token);
+        await transport.DisposeAsync();
+
+        await Assert.ThrowsAsync<TransportException>(() => transport.SendAsync("too late", cts.Token));
+    }
+
+    [Fact]
     public async Task Receive_returns_null_once_the_server_closes()
     {
         using var server = new LoopbackServer(async socket =>

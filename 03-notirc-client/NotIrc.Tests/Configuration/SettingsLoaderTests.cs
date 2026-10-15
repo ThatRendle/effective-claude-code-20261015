@@ -154,6 +154,20 @@ public sealed class SettingsLoaderTests : IDisposable
     }
 
     [Fact]
+    [System.Runtime.Versioning.UnsupportedOSPlatform("windows")]
+    public void An_unreadable_settings_file_is_reported_not_thrown()
+    {
+        Assert.SkipWhen(OperatingSystem.IsWindows(), "File permissions are not enforced the same way on Windows.");
+        var path = WriteFile(FullFile);
+        File.SetUnixFileMode(path, UnixFileMode.None);
+
+        var result = SettingsLoader.Load([], path, Env());
+
+        Assert.Null(result.Settings);
+        Assert.Contains("settings file", Assert.Single(result.Errors));
+    }
+
+    [Fact]
     public void A_malformed_settings_file_is_reported_not_thrown()
     {
         var result = SettingsLoader.Load([], WriteFile("{ not json"), Env());

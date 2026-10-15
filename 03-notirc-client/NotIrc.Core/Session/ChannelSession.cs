@@ -16,6 +16,7 @@ public sealed class ChannelSession : IAsyncDisposable
     private readonly TimeProvider _time;
     private readonly CancellationTokenSource _stop = new();
     private readonly Lock _gate = new();
+    private readonly SemaphoreSlim _promptGate = new(1, 1);
 
     private SessionStatus _status = new(SessionState.Connecting);
     private string _nickname;
@@ -130,9 +131,10 @@ public sealed class ChannelSession : IAsyncDisposable
             await transport.SendAsync(ProtocolCodec.Encode(new SendTextRequest(text)), _stop.Token).ConfigureAwait(false);
             return SendResult.Sent;
         }
-        catch (TransportException)
+        catch (Exception ex) when (ex is TransportException or ObjectDisposedException or OperationCanceledException)
         {
-            // The connection dropped under us; the loop will notice and reconnect.
+            // The connection dropped under us, or the session is shutting down (stop token cancelled or disposed);
+            // the loop will notice and reconnect.
             Raise(new NoticeEntry(_time.GetLocalNow(), NoticeKind.NotConnected));
             return SendResult.NotJoined;
         }
@@ -154,7 +156,7 @@ public sealed class ChannelSession : IAsyncDisposable
 
         try
         {
-            await PromptAndJoinAsync(transport, _stop.Token).ConfigureAwait(false);
+            await PromptAndJoinAsync(transport, _stop.Token, skipIfBusy: true).ConfigureAwait(false);
         }
         catch (TransportException)
         {
@@ -306,22 +308,45 @@ public sealed class ChannelSession : IAsyncDisposable
         }
     }
 
-    private async Task PromptAndJoinAsync(ITransport transport, CancellationToken ct)
+    /// <summary>
+    /// Asks for a nickname and joins with it. Only one prompt is open at a time: a request made while one is open
+    /// is dropped when <paramref name="skipIfBusy"/> is set (a repeated click), otherwise it waits its turn.
+    /// </summary>
+    private async Task PromptAndJoinAsync(ITransport transport, CancellationToken ct, bool skipIfBusy = false)
     {
-        var chosen = await _promptForNickname(Nickname).ConfigureAwait(false);
-        if (string.IsNullOrWhiteSpace(chosen))
+        if (skipIfBusy)
         {
-            SetStatus(new SessionStatus(SessionState.NotJoined));
-            return;
+            if (!await _promptGate.WaitAsync(0, ct).ConfigureAwait(false))
+            {
+                return;
+            }
+        }
+        else
+        {
+            await _promptGate.WaitAsync(ct).ConfigureAwait(false);
         }
 
-        lock (_gate)
+        try
         {
-            _nickname = chosen;
-        }
+            var chosen = await _promptForNickname(Nickname).ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(chosen))
+            {
+                SetStatus(new SessionStatus(SessionState.NotJoined));
+                return;
+            }
 
-        SetStatus(new SessionStatus(WaitingState()));
-        await SendJoinAsync(transport, ct).ConfigureAwait(false);
+            lock (_gate)
+            {
+                _nickname = chosen;
+            }
+
+            SetStatus(new SessionStatus(WaitingState()));
+            await SendJoinAsync(transport, ct).ConfigureAwait(false);
+        }
+        finally
+        {
+            _promptGate.Release();
+        }
     }
 
     private Task SendJoinAsync(ITransport transport, CancellationToken ct) =>

@@ -48,6 +48,12 @@
 - [x] 8.3 Keep the message log following new entries only while the user is at the bottom; verify unit tests for the follow decision (at bottom, scrolled up, content shorter than the view)
 - [x] 8.4 Grey out the presence list while the status is reconnecting or disconnected; verify view-model tests for when it is stale and a headless test that the list is dimmed
 
+## 9. Review fixes: code-review findings
+
+- [x] 9.1 Make a send that races a drop or a dispose give the "not connected" result instead of an unhandled exception (transport and session); verify a transport test that sending after dispose throws `TransportException`, and a session test that sending after dispose returns `NotJoined`
+- [x] 9.2 Allow only one nickname prompt at a time, and stop the app's shutdown from freezing on an open prompt; verify a session test that a second request while a prompt is open is ignored, and a test that a shutdown signal completes a pending prompt with null
+- [x] 9.3 Clear the input after a send only if it still holds the sent text, and report an unreadable `notirc.json` as a settings error; verify a view-model test for text typed during a send and a settings test for an unreadable file
+
 ## Workflow follow-up
 
 - Run `/emmz:setup` to add the Makefile gate targets, `make deps` and the workflow section of `CLAUDE.md` before starting.

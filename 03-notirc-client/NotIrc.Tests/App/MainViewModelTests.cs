@@ -263,4 +263,24 @@ public sealed class MainViewModelTests
 
         Assert.True(vm.IsPresenceStale);
     }
+
+    [Fact]
+    public async Task Text_typed_while_a_send_is_in_flight_is_kept()
+    {
+        await using var h = new SessionHarness();
+        using var vm = Create(h);
+        var transport = await h.JoinAsync();
+        await Wait.UntilAsync(() => vm.Status.State == SessionState.Joined, "joined status");
+        var release = new TaskCompletionSource();
+        transport.HoldSends = release.Task;
+
+        vm.InputText = "first";
+        var send = vm.SendCommand.ExecuteAsync(null);
+        await Wait.ForSentAsync(transport, 2); // join + the held send
+        vm.InputText = "second";
+        release.SetResult();
+        await send;
+
+        Assert.Equal("second", vm.InputText);
+    }
 }

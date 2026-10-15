@@ -35,19 +35,22 @@ public partial class App : Application
     private static MainWindow StartChat(IClassicDesktopStyleApplicationLifetime desktop, ClientSettings settings)
     {
         MainWindow? window = null;
+        var shuttingDown = new CancellationTokenSource(); // lives for the whole run; cancelled at exit
         var session = new ChannelSession(
             new WebSocketTransportFactory(),
             new SessionOptions(settings.ConnectionUrl, settings.Nickname),
-            rejected => PromptForNicknameAsync(window, rejected));
+            rejected => PromptShutdown.AnswerOrNullOnShutdownAsync(PromptForNicknameAsync(window, rejected), shuttingDown.Token));
         var viewModel = new MainViewModel(session, settings.DisplayAddress, action => Dispatcher.UIThread.Post(action));
         window = new MainWindow(viewModel);
 
         // Connect once the window is on screen, so the first status change is seen.
         window.Opened += (_, _) => session.Start();
 
-        // Closing the window also closes an open nickname prompt (which then answers null), so disposing cannot hang on it.
+        // Disposing waits for the session loop, which may be waiting on a nickname dialog that needs this (blocked)
+        // UI thread. Signal shutdown first so a pending prompt answers null straight away.
         desktop.Exit += (_, _) =>
         {
+            shuttingDown.Cancel();
             viewModel.Dispose();
             session.DisposeAsync().AsTask().Wait(ShutdownWait);
         };

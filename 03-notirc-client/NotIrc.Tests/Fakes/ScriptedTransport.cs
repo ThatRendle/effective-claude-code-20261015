@@ -33,7 +33,10 @@ internal sealed class ScriptedTransport : ITransport
         _inbound.Writer.TryWrite(null);
     }
 
-    public Task SendAsync(string text, CancellationToken cancellationToken)
+    /// <summary>When set, a send is recorded but does not complete until this task does, to model a slow network write.</summary>
+    public Task? HoldSends { get; set; }
+
+    public async Task SendAsync(string text, CancellationToken cancellationToken)
     {
         lock (_gate)
         {
@@ -45,7 +48,10 @@ internal sealed class ScriptedTransport : ITransport
             _sent.Add(text);
         }
 
-        return Task.CompletedTask;
+        if (HoldSends is { } hold)
+        {
+            await hold.WaitAsync(cancellationToken).ConfigureAwait(false);
+        }
     }
 
     public async ValueTask<string?> ReceiveAsync(CancellationToken cancellationToken)

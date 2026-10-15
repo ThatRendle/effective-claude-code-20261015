@@ -57,7 +57,15 @@ internal sealed class WebSocketTransport : ITransport
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        await _sendLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            await _sendLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+        }
+        catch (ObjectDisposedException ex)
+        {
+            throw new TransportException("The connection was closed.", ex);
+        }
+
         try
         {
             // ClientWebSocket still allows sends after the server's close frame (half-closed), but
@@ -135,8 +143,9 @@ internal sealed class WebSocketTransport : ITransport
         }
         finally
         {
+            // _sendLock is deliberately not disposed: a send racing this dispose must fail on the socket (a
+            // TransportException), not on a disposed lock. A SemaphoreSlim holds no unmanaged resources here.
             _socket.Dispose();
-            _sendLock.Dispose();
         }
     }
 }
