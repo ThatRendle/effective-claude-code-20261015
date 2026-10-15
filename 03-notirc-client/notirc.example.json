@@ -1,0 +1,5 @@
+{
+  "server": "chat.example.com",
+  "token": "replace-with-your-token",
+  "nick": "your-nickname"
+}

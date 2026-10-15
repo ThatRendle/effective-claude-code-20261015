@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="NotIrc.App/NotIrc.App.csproj" />
+  <Project Path="NotIrc.Core/NotIrc.Core.csproj" />
+  <Project Path="NotIrc.Tests/NotIrc.Tests.csproj" />
+</Solution>

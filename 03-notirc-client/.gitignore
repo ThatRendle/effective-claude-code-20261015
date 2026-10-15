@@ -1,0 +1,9 @@
+bin/
+obj/
+.vs/
+.idea/
+*.user
+TestResults/
+
+# Local settings carry the real token; notirc.example.json is the checked-in shape
+notirc.json
